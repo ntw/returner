@@ -5,7 +5,7 @@ module Returns
 	extend self
 	
 	config = ARGV.shift || File.join(File.dirname($0), "..", "etc", "config")
-	if not File.exists? config
+	unless File.exists? config
 		puts "Can't find config file #{config}"
 		puts "Either create it or specify another config file with: #{File.basename $0} [filename]"
 		exit
@@ -61,7 +61,7 @@ module Returns
 			@b.goto(@createPage)
 			if @b.link(:href => @editLink).exists?
 				@b.link(:href => @editLink).click
-			else if @b.link(:href => @createLink).exists?
+			elsif @b.link(:href => @createLink).exists?
 				@b.link(:href => @createLink).click
 			else
 				puts "Couldn't find a way to create or edit returns once logged in."
@@ -72,16 +72,16 @@ module Returns
 		def start
 			self.login
 			self.open_returns
-			loop {
+			loop do
 				#this isbn isn't mutex protected, but the data will be correct
 				@isbn = inQ.pop
-				@semaphore.synchronize {
+				@semaphore.synchronize do
 					@b.text_field(:name => @productField).set @isbn
 					@b.button(:value => @addButton).click
 
 					if @b.div(:class => @errorClass, :text => @nrText).exists?
 						nonReturnableQ << @isbn
-					else if @b.div(:class => @errorClass, :text => @penalizedText).exists?
+					elsif @b.div(:class => @errorClass, :text => @penalizedText).exists?
 						penalizedQ << @isbn
 						unless @ignorePenalties
 							(@b.text_field(:name => @itemCountName).set(b.text_field(:name => @itemCountName).value.to_i - 1))
@@ -89,8 +89,8 @@ module Returns
 						end
 					end
 					processedQ << @isbn
-				}
-			}
+				end
+			end
 		end
 
 		def stop
@@ -108,14 +108,14 @@ penalizedQ = Queue.new
 threads = []
 
 ReturnsConfig::THREADS.times do
-	threads << Thread.new {
+	threads << Thread.new do
 		begin
 			r = Returner.new
 			r.start
 		ensure
 			r.stop
 		end
-	}
+	end
 end
 
 STDIN.each_line do |isbn|
@@ -140,5 +140,3 @@ puts "NonReturnable:"
 until nonReturnableQ.empty? do
 	puts "#{nonReturnableQ.pop}"
 end
-
-exit
