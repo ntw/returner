@@ -4,17 +4,17 @@ module ReturnsConfig
 	THREADS = 2
 
 	module Conn
-		USER = 
-		PASSWORD = 
-		LOGINPAGE = ipage.ingramcontent.com/ipage/li001.jsp
-		CREATEPAGE = ipage.ingramcontent.com/ipage/customer/returns/am200View.action
+		USER = ''
+		PASSWORD = ''
+		LOGINPAGE = 'ipage.ingramcontent.com/ipage/li001.jsp'
+		CREATEPAGE = 'ipage.ingramcontent.com/ipage/customer/returns/am200View.action'
 	end
 
 	module Structure
 		USERFIELD = 'userIDText'
 		PASSFIELD = 'passwordText'
 		LOGINBUTTON = 'loginButton'
-		NOTAUTHTEXT = 'Invalid USER ID'
+		NOAUTHTEXT = 'Invalid USER ID'
 
 		EDITLINK = /javascript:submitEdit/
 		CREATELINK = /javascript:createReturn()/
