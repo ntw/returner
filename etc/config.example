@@ -1,6 +1,7 @@
 module ReturnsConfig
 	IGNOREPENALTIES = true
 	BROWSERTYPE = :chrome
+	THREADS = 2
 
 	module Conn
 		USER = 

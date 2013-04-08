@@ -11,7 +11,6 @@ module Returns
 		exit
 	end
 	load config
-	load File.join(File.dirname($0), "..", "share", "config.schema")
 
 	class Returner
 		def initialize
@@ -36,10 +35,6 @@ module Returns
 			@productField = ReturnsConfig::Structure::PRODUCTFIELD
 			@addButton = ReturnsConfig::Structure::ADDBUTTON
 			@errorClass = ReturnsConfig::Structure::ERRORCLASS
-
-			@processed = []
-			@penalized = []
-			@nonReturnable = []
 
 			@semaphore = Mutex.new
 			@b = Watir::Browser.new @browserType
