@@ -7,3 +7,5 @@ returns_old.rb
 etc/config
 *.swp
 tags
+bin/chromedriver.log
+returnit.rb
