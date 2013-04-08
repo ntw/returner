@@ -1,0 +1,29 @@
+module ReturnsConfig
+	IGNOREPENALTIES = true
+	BROWSERTYPE = :chrome
+
+	module Conn
+		USER = 
+		PASSWORD = 
+		LOGINPAGE = ipage.ingramcontent.com/ipage/li001.jsp
+		CREATEPAGE = ipage.ingramcontent.com/ipage/customer/returns/am200View.action
+	end
+
+	module Structure
+		USERFIELD = 'userIDText'
+		PASSFIELD = 'passwordText'
+		LOGINBUTTON = 'loginButton'
+		NOTAUTHTEXT = 'Invalid USER ID'
+
+		EDITLINK = /javascript:submitEdit/
+		CREATELINK = /javascript:createReturn()/
+
+		PRODUCTFIELD = 'prod_id'
+		ADDBUTTON = 'Add'
+		ERRORCLASS = 'errorMessage'
+		NRTEXT = /item is not returnable/
+		PENALIZEDTEXT = /added to the list below/
+		ITEMCOUNTNAME = 'item_rtn_cnt2'
+		UPDATENAME = 'Update'
+	end
+end

@@ -4,3 +4,6 @@ isbns.txt
 lib_trollop.rb
 notes.txt
 returns_old.rb
+etc/config
+*.swp
+tags
