@@ -74,17 +74,14 @@ module Returns
 		def start
 			self.login
 			self.open_returns
-
 			until @stopme and @inQ.empty?
 				isbn = @inQ.pop(non_block = true)
 				unless isbn == nil
 					self.return_isbn(isbn)
 				end
-				sleep(@sleeptime)
+				sleep(@sleepTime)
 			end
-
 			self.stop
-				
 		end
 
 		def return_isbn(isbn)
