@@ -22,6 +22,7 @@ module Returns
 
 			@ignorePenalties = ReturnsConfig::IGNOREPENALTIES
 			@browserType = ReturnsConfig::BROWSERTYPE
+			@sleepTime = ReturnsConfig::SLEEPTIME
 
 			@user = ReturnsConfig::Conn::USER
 			@password = ReturnsConfig::Conn::PASSWORD
@@ -79,6 +80,7 @@ module Returns
 				unless isbn == nil
 					self.return_isbn(isbn)
 				end
+				sleep(@sleeptime)
 			end
 
 			self.stop
@@ -101,6 +103,7 @@ module Returns
 		end
 
 		def stop
+			#if we don't wait for the browser to close the thread will exit with it still open.
 			if @b.close
 				Thread.exit
 			end

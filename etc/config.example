@@ -1,7 +1,7 @@
 module ReturnsConfig
 	IGNOREPENALTIES = true
 	BROWSERTYPE = :chrome
-	THREADS = 2
+	SLEEPTIME = 0.3 
 
 	module Conn
 		USER = ''
