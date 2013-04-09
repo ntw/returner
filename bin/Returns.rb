@@ -13,7 +13,13 @@ module Returns
 	load config
 
 	class Returner
-		def initialize
+			attr_accessor :stopme
+		def initialize(inQ, processedQ, nonReturnableQ, penalizedQ)
+			@inQ = inQ
+			@processedQ = processedQ
+			@nonReturnableQ = nonReturnableQ
+			@penalizedQ = penalizedQ
+
 			@ignorePenalties = ReturnsConfig::IGNOREPENALTIES
 			@browserType = ReturnsConfig::BROWSERTYPE
 
@@ -36,7 +42,7 @@ module Returns
 			@addButton = ReturnsConfig::Structure::ADDBUTTON
 			@errorClass = ReturnsConfig::Structure::ERRORCLASS
 
-			@stoppable = true
+			@stopme = false
 			@b = Watir::Browser.new @browserType
 		end
 
@@ -65,32 +71,40 @@ module Returns
 		end
 
 		def start
-			@stoppable = true
 			self.login
 			self.open_returns
-			loop do
-				@isbn = inQ.pop
-				@stoppable = false
-				@b.text_field(:name => @productField).set @isbn
-				@b.button(:value => @addButton).click
-				if @b.div(:class => @errorClass, :text => @nrText).exists?
-					nonReturnableQ << @isbn
-				elsif @b.div(:class => @errorClass, :text => @penalizedText).exists?
-					penalizedQ << @isbn
-					unless @ignorePenalties
-						(@b.text_field(:name => @itemCountName).set(b.text_field(:name => @itemCountName).value.to_i - 1))
-						@b.button(:name => @updateName).click
-					end
+
+			until @stopme and @inQ.empty?
+				isbn = @inQ.pop(non_block = true)
+				unless isbn == nil
+					self.return_isbn(isbn)
 				end
-				processedQ << @isbn
-				@stoppable = true
 			end
+
+			self.stop
+				
+		end
+
+		def return_isbn(isbn)
+			@b.text_field(:name => @productField).set isbn
+			@b.button(:value => @addButton).click
+			if @b.div(:class => @errorClass, :text => @nrText).exists?
+				@nonReturnableQ << isbn
+			elsif @b.div(:class => @errorClass, :text => @penalizedText).exists?
+				@penalizedQ << isbn
+				unless @ignorePenalties
+					@b.text_field(:name => @itemCountName).set(b.text_field(:name => @itemCountName).value.to_i - 1)
+					@b.button(:name => @updateName).click
+				end
+			end
+			@processedQ << isbn
 		end
 
 		def stop
-			until @stoppable
+			if @b.close
+				Thread.exit
 			end
-			@b.close
+			Thread.exit
 		end
 	end
 end
