@@ -22,7 +22,6 @@ module Returns
 
 			@ignorePenalties = ReturnsConfig::IGNOREPENALTIES
 			@browserType = ReturnsConfig::BROWSERTYPE
-			@sleepTime = ReturnsConfig::SLEEPTIME
 
 			@user = ReturnsConfig::Conn::USER
 			@password = ReturnsConfig::Conn::PASSWORD
@@ -43,7 +42,6 @@ module Returns
 			@addButton = ReturnsConfig::Structure::ADDBUTTON
 			@errorClass = ReturnsConfig::Structure::ERRORCLASS
 
-			@stopme = false
 			@b = Watir::Browser.new @browserType
 		end
 
@@ -74,12 +72,13 @@ module Returns
 		def start
 			self.login
 			self.open_returns
-			until @stopme and @inQ.empty?
-				isbn = @inQ.pop(non_block = true)
-				unless isbn == nil
+			loop do
+				isbn = @inQ.pop
+				if isbn == nil
+					self.stop
+				else
 					self.return_isbn(isbn)
 				end
-				sleep(@sleepTime)
 			end
 			self.stop
 		end
@@ -102,6 +101,7 @@ module Returns
 		def stop
 			#if we don't wait for the browser to close the thread will exit with it still open.
 			if @b.close
+				@processedQ << nil
 				Thread.exit
 			end
 			Thread.exit
